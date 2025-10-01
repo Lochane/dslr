@@ -1,30 +1,27 @@
 import sys
 from utils import data_tools, stats_tools
 
-def describe(data, threshold=0.9, min_numeric=2):
+def describe(data):
     stats = ["Count", "Mean", "Std", "Min", "25%", "50%", "75%", "Max"]
 
     blacklist = {"index", "id", "first name", "last name", "name"}
 
+    numeric_cols = [col for col in data_tools.to_numeric_list(data)
+                        if col.lower() not in blacklist]
+    if not numeric_cols:
+        print("No numeric colums found.")
+        return
+
     numeric_data = {}
     ignored = []
     for col, values in data.items():
-        if col.lower() in blacklist:
-            ignored.append(col)
-            continue
-        if data_tools.is_numeric_column(values, threshold=threshold, min_numeric=min_numeric):
-            numeric_data[col] = data_tools.to_numeric_list(values)
+        if col in numeric_cols:
+            numeric_data[col] = values
         else:
             ignored.append(col)
 
-    cols = list(numeric_data.keys())
-    if not cols:
-        print("No numeric columns found.")
-        return
-
     values_str = {}
-    for col in cols:
-        vals = numeric_data[col]
+    for col, vals in numeric_data.items():
         for stat in stats:
             try:
                 if stat == "Count":
@@ -58,19 +55,19 @@ def describe(data, threshold=0.9, min_numeric=2):
 
     stat_col_width = 12
     col_widths = {}
-    for col in cols:
+    for col in numeric_data.keys():
         max_val_len = max(len(values_str[(col, st)]) for st in stats)
         col_name_len = len(col)
         col_widths[col] = max(12, max_val_len, col_name_len + 2)
 
     print(f"{'':<{stat_col_width}}", end="")
-    for col in cols:
+    for col in numeric_data.keys():
         print(f"{col:>{col_widths[col]}} ", end="")
     print()
 
     for stat in stats:
         print(f"{stat:<{stat_col_width}}", end="")
-        for col in cols:
+        for col in numeric_data.keys():
             s = values_str[(col, stat)]
             print(f"{s:>{col_widths[col]}} ", end="")
         print()

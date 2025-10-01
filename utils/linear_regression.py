@@ -1,4 +1,4 @@
-from lib_lr.stats_tools import ft_mean, ft_std_dev
+from stats_tools import ft_mean, ft_std_dev
 
 def ft_linear_regression(x, y, learning_rate=0.01, iterations=1000):
 
