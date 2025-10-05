@@ -1,4 +1,5 @@
 import sys
+import math
 from utils import data_tools, stats_tools
 
 def describe(data):
@@ -9,16 +10,38 @@ def describe(data):
     numeric_cols = [col for col in data_tools.to_numeric_list(data)
                         if col.lower() not in blacklist]
     if not numeric_cols:
-        print("No numeric colums found.")
+        print("No numeric columns found.")
         return
 
     numeric_data = {}
     ignored = []
     for col, values in data.items():
         if col in numeric_cols:
-            numeric_data[col] = values
+            # Nettoyage: retirer None et NaN; ne garder que les valeurs numériques valides
+            cleaned = []
+            for v in values:
+                if v is None:
+                    continue
+                try:
+                    fv = float(v)
+                except (TypeError, ValueError):
+                    continue
+                # Détecter NaN via math.isnan
+                if math.isnan(fv):
+                    continue
+                cleaned.append(fv)
+            # Ignorer les colonnes ne contenant que des NaN/None
+            if cleaned:
+                numeric_data[col] = cleaned
+            else:
+                ignored.append(col)
         else:
             ignored.append(col)
+
+    # Si toutes les colonnes numériques sont vides après nettoyage
+    if not numeric_data:
+        print("No numeric columns with data.")
+        return
 
     values_str = {}
     for col, vals in numeric_data.items():

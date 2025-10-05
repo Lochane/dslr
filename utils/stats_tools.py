@@ -42,4 +42,5 @@ def ft_percentile(values, q):
 	high = low + 1
 	if high >= n:
 		return sorted_vals[low]
-	return sorted_vals[low] + (sorted_vals[high] - sorted_vals[low] * (pos -low))
+	# interpolation linéaire correcte: low + (high - low) * fraction
+	return sorted_vals[low] + (sorted_vals[high] - sorted_vals[low]) * (pos - low)
