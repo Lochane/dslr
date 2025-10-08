@@ -11,8 +11,10 @@ def ft_variance(values):
 		total += (n - m) ** 2
 	return total / len(values)
 
+
 def ft_std_dev(values):
 	return ft_variance(values) ** 0.5
+
 
 def ft_count(values):
 	count = 0
@@ -33,6 +35,18 @@ def ft_max(values):
 		if i > m:
 			m = i
 	return m
+
+
+def ft_covariance(x, y):
+    mean_x = ft_mean(x)
+    mean_y = ft_mean(y)
+    cov = sum((x[i] - mean_x) * (y[i] - mean_y) for i in range(len(x))) / (len(x) - 1)
+    return cov
+
+def ft_correlation(x, y):
+    cov = ft_covariance(x, y)
+    return cov / (ft_std(x) * ft_std(y))
+
 
 def ft_percentile(values, q):
 	sorted_vals = sorted(values)
