@@ -15,6 +15,7 @@ def load_csv(path):
 					data[col].append(val)
 		return data
 
+
 def to_numeric_list(dataset):
 	numeric_col = []
 	for col_name, values in dataset.items():

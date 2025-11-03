@@ -43,9 +43,10 @@ def ft_covariance(x, y):
     cov = sum((x[i] - mean_x) * (y[i] - mean_y) for i in range(len(x))) / (len(x) - 1)
     return cov
 
+
 def ft_correlation(x, y):
     cov = ft_covariance(x, y)
-    return cov / (ft_std(x) * ft_std(y))
+    return cov / (ft_std_dev(x) * ft_std_dev(y))
 
 
 def ft_percentile(values, q):
