@@ -1,4 +1,5 @@
 import sys
+import os
 from utils import data_tools, stats_tools
 import matplotlib.pyplot as plt
 import math
@@ -7,22 +8,6 @@ import math
 
 def prepvalues(dataset):
     cols = [c for c in data_tools.to_numeric_list(dataset) if c.lower() != "index"]
-    for col in cols:
-        values = [v for v in dataset[col] if v is not None]
-        if not values:
-            continue
-        mean = stats_tools.ft_mean(values)
-        std = stats_tools.ft_std_dev(values)
-        if std == 0:
-            continue
-        norm = []
-        it = dataset[col]
-        for v in it:
-            if v is None:
-                norm.append(None)
-            else:
-                norm.append((v - mean) / std)
-        dataset[col] = norm
     return dataset
 
 def get_grades(dataset, prep_dataset, house, topic):
@@ -67,7 +52,10 @@ def histogram(dataset, prep_dataset):
         fig.delaxes(axes[j])
 
     plt.tight_layout()
-    plt.savefig("all_histograms.png")
+    outdir = os.path.join("plots")
+    os.makedirs(outdir, exist_ok=True)
+    plt.savefig(os.path.join(outdir, "all_histograms.png"))
+    plt.close(fig)
 
 
 if __name__ == "__main__":
