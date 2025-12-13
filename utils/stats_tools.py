@@ -1,15 +1,25 @@
 def ft_mean(values):
 	total = 0
-	for v in values: 
-		total += v
-	return total / len(values)
+	count = 0
+	for v in values:
+		if v is not None and (isinstance(v, (int, float)) and not (v != v)):
+			total += v
+			count += 1
+	if count == 0:
+		return 0
+	return total / count
 
 def ft_variance(values):
 	m = ft_mean(values)
 	total = 0
+	count = 0
 	for n in values:
-		total += (n - m) ** 2
-	return total / len(values)
+		if n is not None and (isinstance(n, (int, float)) and not (n != n)):
+			total += (n - m) ** 2
+			count += 1
+	if count == 0:
+		return 0
+	return total / count
 
 
 def ft_std_dev(values):

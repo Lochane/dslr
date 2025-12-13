@@ -29,8 +29,8 @@ def get_corr_feature(df):
         x = df[f1].tolist()
         y = df[f2].tolist()
         r = stats_tools.ft_correlation(x, y)
-        if abs(r) > best_corr:
-            best_corr = abs(r)
+        if r > best_corr:
+            best_corr = r
             best_pair = (f1, f2)
 
 
@@ -50,7 +50,9 @@ def plt_scatter(pair, df):
     plt.xlabel(feat1)
     plt.ylabel(feat2)
     plt.legend()
-    plt.show()
+    # plt.show()
+    plt.savefig("scatter_plot.png")
+    plt.close()
 
 
 
