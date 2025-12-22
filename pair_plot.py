@@ -1,4 +1,5 @@
 import sys
+import os
 import pandas as pd
 from utils import data_tools, stats_tools
 import matplotlib.pyplot as plt
@@ -18,7 +19,11 @@ def pair_plot(df):
 		'Ravenclaw': 'blue',
 		'Hufflepuff': 'gold'
 	})
-	plt.savefig("pair_plot.png")
+
+	plt.tight_layout()
+	outdir = os.path.join("plots")
+	os.makedirs(outdir, exist_ok=True)
+	plt.savefig(os.path.join(outdir, "pair_plot.png"))
 	plt.close()
 
 if __name__ == "__main__":

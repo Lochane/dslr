@@ -1,9 +1,9 @@
 import sys
 import itertools
 from utils import data_tools, stats_tools
-from histogram import prepvalues
 import matplotlib.pyplot as plt
 import pandas as pd
+import os
 
 
 def pd_prep_csv(path):
@@ -51,7 +51,10 @@ def plt_scatter(pair, df):
     plt.ylabel(feat2)
     plt.legend()
     # plt.show()
-    plt.savefig("scatter_plot.png")
+    plt.tight_layout()
+    outdir = os.path.join("plots")
+    os.makedirs(outdir, exist_ok=True)
+    plt.savefig(os.path.join(outdir, "scatter_plot.png"))
     plt.close()
 
 
