@@ -16,6 +16,7 @@ def sigmoide(score):
 
 def ft_logistic_regression(x, y, learning_rate=0.01, iterations=1000):
 
+    # Data gathering for models application : Mean, std, norm
     x_mean = []
     x_std = []
     n_features = len(INCLUDE_FEATURES)
@@ -36,6 +37,7 @@ def ft_logistic_regression(x, y, learning_rate=0.01, iterations=1000):
             student_features.append((val - x_mean[feature]) / std)
         x_norm.append(student_features)
 
+    # Gradient descent
     theta0 = 0
     theta = [0] * n_features
     n = len(x_norm)

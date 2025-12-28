@@ -21,11 +21,12 @@ def load_all_models(filename="all_thetas.json"):
     return models
 
 
+# application de la formule de prediction sur une maison
 def predict_proba(student, theta0, theta, x_mean, x_std):
     score = theta0
     for i, feature in enumerate(INCLUDE_FEATURES):
         val = student.get(feature)
-        if val is None or (isinstance(val, float) and np.isnan(val)):
+        if val is None or (isinstance(val, float) and np.isnan(val)):  ## on remplace les donnee manquante par la moyenne du reste de la table
             val = x_mean[i]
         std = x_std[i] if x_std[i] != 0 else 1
         val_norm = (val - x_mean[i]) / std
@@ -33,6 +34,7 @@ def predict_proba(student, theta0, theta, x_mean, x_std):
     return sigmoide(score)
 
 
+# Recherche de la maison avec la probabilite la plus grande
 def predict_house(student, models):
     probs = {}
     for house, model in models.items():
