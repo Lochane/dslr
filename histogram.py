@@ -15,6 +15,7 @@ def histogram(dataset):
     fig, axes = plt.subplots(rows, cols, figsize=(15, 5 * rows))
     axes = axes.flatten()
 
+    # Separate data by house value
     for i, topic in enumerate(topics):
         gry = [v for j, v in enumerate(dataset[topic]) if dataset["Hogwarts House"][j] == "Gryffindor" and v is not None]
         rav = [v for j, v in enumerate(dataset[topic]) if dataset["Hogwarts House"][j] == "Ravenclaw" and v is not None]
@@ -23,6 +24,7 @@ def histogram(dataset):
         if not (gry or rav or sly or huf):
             continue
 
+    # Plotting Hist
         ax = axes[i]
         ax.hist(gry, bins=30, alpha=0.5, label='Gry', color='r')
         ax.hist(rav, bins=30, alpha=0.5, label='Rav', color='b')
@@ -31,6 +33,7 @@ def histogram(dataset):
         ax.set_title(topic)
         ax.legend(fontsize=8)
 
+    # Deleting empty graph
     for j in range(i + 1, len(axes)):
         fig.delaxes(axes[j])
 

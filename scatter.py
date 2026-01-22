@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import os
 
-
+# Formatage des donnees
 def pd_prep_csv(path):
     dataset = pd.read_csv(path, index_col="Index")
     print(f"Shape avant dropna {dataset.shape}")
@@ -18,6 +18,8 @@ def prep_scatter(df):
     df.drop(['First Name' ,'Last Name', 'Best Hand', 'Birthday'], axis=1, inplace=True)
     print("Colums head after drop", df.keys())
     
+
+# Choix des deux features avec le plus de correlation
 
 def get_corr_feature(df):
     features = df.columns.tolist()
@@ -39,6 +41,7 @@ def get_corr_feature(df):
     return best_pair
 
 
+# Plotting
 def plt_scatter(pair, df):
     colors = {"Gryffindor":"red", "Slytherin":"green", "Ravenclaw":"blue", "Hufflepuff":"gold"}
     feat1, feat2 = pair
@@ -58,7 +61,6 @@ def plt_scatter(pair, df):
     plt.close()
 
 
-
 if __name__ == "__main__":
     if len(sys.argv) != 2:
         print("Usage: python histogram.py <filename>")
@@ -73,7 +75,3 @@ if __name__ == "__main__":
     prep_scatter(df)
     corr_feature = get_corr_feature(df)
     plt_scatter(corr_feature, df)
-
-    
-
-

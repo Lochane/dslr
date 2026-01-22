@@ -1,5 +1,6 @@
 #Requirement file
 matplotlib
 pandas
+scikit-learn
 seaborn
 numpy

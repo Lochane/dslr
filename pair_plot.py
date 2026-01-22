@@ -10,6 +10,7 @@ INCLUDE_FEATURES = [
 	'Divination', 'Muggle Studies', 'Ancient Runes',
 	'Transfiguration']
 
+# Utilisation de seaborn pour modelisation de pair plot a partir d'un df
 def pair_plot(df):
 	df = df[INCLUDE_FEATURES + ['Hogwarts House']]
 	# df.dropna(inplace=True)
