@@ -43,6 +43,7 @@ def ft_logistic_regression(x, y, learning_rate=0.01, iterations=1000):
     n = len(x_norm)
 
     for _ in range(iterations):
+        print("\033[93mLoading iteration...\033[0m", end="\r")
         for student in range(n):
             score = theta0
             for feature in range(n_features):
@@ -62,7 +63,12 @@ if __name__ == "__main__":
         print("Usage: python logreg_train.py <path_to_csv>")
         sys.exit(1)
 
-    df = pd.read_csv(sys.argv[1], index_col="Index")
+    try:
+        df = pd.read_csv(sys.argv[1], index_col="Index")
+    except Exception as e:
+        print(f"Error reading the CSV file: {e}")
+        sys.exit(1)
+
     df = df.dropna(subset=['Hogwarts House'])
 
     all_models = {}
@@ -77,7 +83,9 @@ if __name__ == "__main__":
             "x_mean": x_mean,
             "x_std": x_std
         }
-
+        print(f"\033[92mModel trained for house: {house}\033[0m") 
+    
+    print("\033[92mSaving all models to all_thetas.json\033[0m") 
     with open("all_thetas.json", "w") as f:
         json.dump(all_models, f, indent=2)
 
