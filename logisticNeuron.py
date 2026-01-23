@@ -27,7 +27,7 @@ class LogisticNeuron(Neuron):
 				for j in range(len(self.weights)): ## Update weights
 					self.weights[j] -= (learning_rate * error * x[i][j]) / n
 
-	def predict(self, x, y, x_mean, x_std):
+	def predict(self, x):
 		predictions = []
 		for inputs in x:
 			prob = self.forward(inputs)

@@ -47,7 +47,7 @@ def main():
 
         x_valid = scaler.transform(valid_df[INCLUDE_FEATURES].values.tolist())
         y_valid = [1 if h == house else 0 for h in valid_df['Hogwarts House']]
-        prediction = neuron.predict(x_valid, INCLUDE_FEATURES, scaler.means, scaler.stds)
+        prediction = neuron.predict(x_valid)
         accuracy = accuracy_score(y_valid, prediction)
         print(f"\033[94mValidation accuracy for {house}: {accuracy * 100:.2f}%\033[0m")
         print(f"\033[92mModel trained for {house}\033[0m")
