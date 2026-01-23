@@ -51,19 +51,6 @@ def main():
         accuracy = accuracy_score(y_valid, prediction)
         print(f"\033[94mValidation accuracy for {house}: {accuracy * 100:.2f}%\033[0m")
         print(f"\033[92mModel trained for {house}\033[0m")
-
-
-
-    # for house in valid_df['Hogwarts House'].unique():
-    #     model = all_models[house]
-    #     neuron = LogisticNeuron(model["theta"], model["theta0"])
-    #     predictions = []
-    #     for student in x_valid:
-    #         prob = neuron.predict(student, INCLUDE_FEATURES, model["x_mean"], model["x_std"])
-    #         predictions.append(1 if prob >= 0.5 else 0)
-    #     accuracy = sum(1 for p, y in zip(predictions, y_valid) if p == y) / len(y_valid)
-    #     print(f"\033[94mValidation accuracy for {house}: {accuracy * 100:.2f}%\033[0m")
-
     
     print("\033[92mSaving all models to all_thetas.json\033[0m")
     with open("all_thetas.json", "w") as f:
