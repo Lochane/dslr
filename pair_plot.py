@@ -26,8 +26,7 @@ def pair_plot(df):
 				ax.hist(rav, bins=30, alpha=0.5, label='Ravenclaw', color='blue')
 				ax.hist(sly, bins=30, alpha=0.5, label='Slytherin', color='green')
 				ax.hist(huf, bins=30, alpha=0.5, label='Hufflepuff', color='yellow')
-				ax.set_ylabel(f1 if j == 0 else '')
-				ax.set_xlabel(f1 if i == len(INCLUDE_FEATURES) - 1 else '')
+
 			else:
 				# Scatter plots pour les autres cases
 				for house, group in df.groupby('Hogwarts House'):

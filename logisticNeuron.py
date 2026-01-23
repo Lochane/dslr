@@ -1,0 +1,35 @@
+import numpy as np
+
+class Neuron:
+	def __init__(self, weights, bias):
+		self.weights = weights
+		self.bias = bias
+
+	def forward(self, inputs):
+		raise NotImplementedError("Forward method not implemented.")
+
+class LogisticNeuron(Neuron):
+	def forward(self, inputs):
+		score = self.bias
+		for i in range(len(self.weights)):
+			score += self.weights[i] * inputs[i]
+		return 1 / (1 + np.exp(-score)) ## Sigmoid activation
+			
+
+	def fit(self, x, y, learning_rate=0.01, iterations=1000):
+		n = len(x)
+		for _ in range(iterations): ## Gradient descent
+			print("\033[93mLoading iteration...\033[0m", end="\r")
+			for i in range(n):
+				prediction = self.forward(x[i])
+				error = prediction - y[i]
+				self.bias -= (learning_rate * error) / n ## Update bias
+				for j in range(len(self.weights)): ## Update weights
+					self.weights[j] -= (learning_rate * error * x[i][j]) / n
+
+	def predict(self, x, y, x_mean, x_std):
+		predictions = []
+		for inputs in x:
+			prob = self.forward(inputs)
+			predictions.append(1 if prob >= 0.5 else 0)
+		return predictions

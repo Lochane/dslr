@@ -2,7 +2,10 @@ import numpy as np
 import sys
 import pandas as pd
 import json
+from logisticNeuron import LogisticNeuron
+from standardScaler import StandardScaler
 from utils.stats_tools import ft_mean, ft_std_dev
+from sklearn.metrics import accuracy_score
 
 INCLUDE_FEATURES = [
     'Herbology', 'Defense Against the Dark Arts',
@@ -10,54 +13,7 @@ INCLUDE_FEATURES = [
     'Transfiguration'
 ]
 
-def sigmoide(score):
-    return 1 / (1 + np.exp(-score))
-
-
-def ft_logistic_regression(x, y, learning_rate=0.01, iterations=1000):
-
-    # Data gathering for models application : Mean, std, norm
-    x_mean = []
-    x_std = []
-    n_features = len(INCLUDE_FEATURES)
-
-    for feature in range(n_features):
-        feature_values = [x[i][feature] for i in range(len(x))]
-        x_mean.append(ft_mean(feature_values))
-        x_std.append(ft_std_dev(feature_values))
-
-    x_norm = []
-    for student in range(len(x)):
-        student_features = []
-        for feature in range(n_features):
-            val = x[student][feature]
-            if val is None or (isinstance(val, float) and val != val):
-                val = x_mean[feature]
-            std = x_std[feature] if x_std[feature] != 0 else 1
-            student_features.append((val - x_mean[feature]) / std)
-        x_norm.append(student_features)
-
-    # Gradient descent
-    theta0 = 0
-    theta = [0] * n_features
-    n = len(x_norm)
-
-    for _ in range(iterations):
-        print("\033[93mLoading iteration...\033[0m", end="\r")
-        for student in range(n):
-            score = theta0
-            for feature in range(n_features):
-                score += theta[feature] * x_norm[student][feature]
-            prediction = sigmoide(score)
-            error = prediction - y[student]
-            theta0 -= (learning_rate * error) / n
-            for feature in range(n_features):
-                theta[feature] -= (learning_rate * error * x_norm[student][feature]) / n
-
-    return theta0, theta, x_mean, x_std
-
-
-if __name__ == "__main__":
+def main():
 
     if len(sys.argv) != 2:
         print("Usage: python logreg_train.py <path_to_csv>")
@@ -70,22 +26,50 @@ if __name__ == "__main__":
         sys.exit(1)
 
     df = df.dropna(subset=['Hogwarts House'])
+    split = int(len(df) * 0.2)
+    train_df = df.iloc[split:]
+    valid_df = df.iloc[:split]
 
     all_models = {}
 
-    for house in df['Hogwarts House'].unique():
-        x = df[INCLUDE_FEATURES].values.tolist()
-        y = [1 if h == house else 0 for h in df['Hogwarts House']]
-        theta0, theta, x_mean, x_std = ft_logistic_regression(x, y)
+    for house in train_df['Hogwarts House'].unique():
+        scaler = StandardScaler(INCLUDE_FEATURES)
+        x_train = scaler.fit_transform(train_df[INCLUDE_FEATURES].values.tolist())
+        y_train = [1 if h == house else 0 for h in train_df['Hogwarts House']]
+        neuron = LogisticNeuron([0] * len(INCLUDE_FEATURES), 0)
+        neuron.fit(x_train, y_train, learning_rate=0.1, iterations=1000)
         all_models[house] = {
-            "theta0": theta0,
-            "theta": theta,
-            "x_mean": x_mean,
-            "x_std": x_std
+            "theta0": neuron.bias,
+            "theta": neuron.weights,
+            "x_mean": scaler.means,
+            "x_std": scaler.stds
         }
-        print(f"\033[92mModel trained for house: {house}\033[0m") 
+
+        x_valid = scaler.transform(valid_df[INCLUDE_FEATURES].values.tolist())
+        y_valid = [1 if h == house else 0 for h in valid_df['Hogwarts House']]
+        prediction = neuron.predict(x_valid, INCLUDE_FEATURES, scaler.means, scaler.stds)
+        accuracy = accuracy_score(y_valid, prediction)
+        print(f"\033[94mValidation accuracy for {house}: {accuracy * 100:.2f}%\033[0m")
+        print(f"\033[92mModel trained for {house}\033[0m")
+
+
+
+    # for house in valid_df['Hogwarts House'].unique():
+    #     model = all_models[house]
+    #     neuron = LogisticNeuron(model["theta"], model["theta0"])
+    #     predictions = []
+    #     for student in x_valid:
+    #         prob = neuron.predict(student, INCLUDE_FEATURES, model["x_mean"], model["x_std"])
+    #         predictions.append(1 if prob >= 0.5 else 0)
+    #     accuracy = sum(1 for p, y in zip(predictions, y_valid) if p == y) / len(y_valid)
+    #     print(f"\033[94mValidation accuracy for {house}: {accuracy * 100:.2f}%\033[0m")
+
     
-    print("\033[92mSaving all models to all_thetas.json\033[0m") 
+    print("\033[92mSaving all models to all_thetas.json\033[0m")
     with open("all_thetas.json", "w") as f:
         json.dump(all_models, f, indent=2)
 
+
+
+if __name__ == "__main__":
+    main()
