@@ -67,7 +67,7 @@ def main():
 		results.append(house)
 
 	df["Hogwarts House Predicted"] = results
-	df[["Hogwarts House Predicted"]].to_csv("houses.csv")
+	df[["Hogwarts House Predicted"]].to_csv("houses_split.csv")
 
 	print("\033[92mPredictions saved to houses.csv\033[0m")
 	# Vérifier si la colonne réelle existe et contient des valeurs

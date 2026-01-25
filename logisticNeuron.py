@@ -26,10 +26,3 @@ class LogisticNeuron(Neuron):
 				self.bias -= (learning_rate * error) / n ## Update bias
 				for j in range(len(self.weights)): ## Update weights
 					self.weights[j] -= (learning_rate * error * x[i][j]) / n
-
-	def predict(self, x):
-		predictions = []
-		for inputs in x:
-			prob = self.forward(inputs)
-			predictions.append(1 if prob >= 0.5 else 0)
-		return predictions

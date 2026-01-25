@@ -6,6 +6,7 @@ from logisticNeuron import LogisticNeuron
 from standardScaler import StandardScaler
 from utils.stats_tools import ft_mean, ft_std_dev
 from sklearn.metrics import accuracy_score
+from logreg_predict import predict_house
 
 INCLUDE_FEATURES = [
     'Herbology', 'Defense Against the Dark Arts',
@@ -44,14 +45,17 @@ def main():
             "x_mean": scaler.means,
             "x_std": scaler.stds
         }
-
-        x_valid = scaler.transform(valid_df[INCLUDE_FEATURES].values.tolist())
-        y_valid = [1 if h == house else 0 for h in valid_df['Hogwarts House']]
-        prediction = neuron.predict(x_valid)
-        accuracy = accuracy_score(y_valid, prediction)
-        print(f"\033[94mValidation accuracy for {house}: {accuracy * 100:.2f}%\033[0m")
         print(f"\033[92mModel trained for {house}\033[0m")
     
+    results = []
+
+    for _, row in valid_df.iterrows():
+        student = row.to_dict()
+        predicted_house = predict_house(student, all_models)
+        results.append(predicted_house)
+
+    accuracy = accuracy_score(valid_df['Hogwarts House'], results)
+    print(f"\033[94mOverall validation accuracy: {accuracy * 100:.2f}%\033[0m")
     print("\033[92mSaving all models to all_thetas.json\033[0m")
     with open("all_thetas.json", "w") as f:
         json.dump(all_models, f, indent=2)
