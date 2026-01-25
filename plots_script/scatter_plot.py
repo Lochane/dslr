@@ -1,9 +1,10 @@
 import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 import itertools
 from utils import data_tools, stats_tools
 import matplotlib.pyplot as plt
 import pandas as pd
-import os
 
 # Formatage des donnees
 def pd_prep_csv(path):

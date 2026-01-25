@@ -2,6 +2,8 @@ import sys
 import json
 import pandas as pd
 import numpy as np
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from sklearn.metrics import accuracy_score
 from utils.stats_tools import ft_max
 

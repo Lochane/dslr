@@ -1,9 +1,11 @@
-import numpy as np
 import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+import numpy as np
 import pandas as pd
 import json
-from logisticNeuron import LogisticNeuron
-from standardScaler import StandardScaler
+from models.logisticNeuron import LogisticNeuron
+from models.standardScaler import StandardScaler
 from utils.stats_tools import ft_mean, ft_std_dev
 from sklearn.metrics import accuracy_score
 from logreg_predict import predict_house
