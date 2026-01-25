@@ -31,8 +31,8 @@ def get_corr_feature(df):
         x = df[f1].tolist()
         y = df[f2].tolist()
         r = stats_tools.ft_correlation(x, y)
-        if r > best_corr:
-            best_corr = r
+        if abs(r) > best_corr:
+            best_corr = abs(r)
             best_pair = (f1, f2)
 
 
