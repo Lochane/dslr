@@ -22,15 +22,17 @@ def pair_plot(df):
 				sly = df[df["Hogwarts House"] == "Slytherin"][f1].dropna()
 				huf = df[df["Hogwarts House"] == "Hufflepuff"][f1].dropna()
 				
-				ax.hist(gry, bins=30, alpha=0.5, label='Gryffindor', color='red')
-				ax.hist(rav, bins=30, alpha=0.5, label='Ravenclaw', color='blue')
-				ax.hist(sly, bins=30, alpha=0.5, label='Slytherin', color='green')
-				ax.hist(huf, bins=30, alpha=0.5, label='Hufflepuff', color='yellow')
+				ax.hist(gry, bins=30, alpha=0.5, label='Gryffindor', color='r')
+				ax.hist(rav, bins=30, alpha=0.5, label='Ravenclaw', color='b')
+				ax.hist(sly, bins=30, alpha=0.5, label='Slytherin', color='g')
+				ax.hist(huf, bins=30, alpha=0.5, label='Hufflepuff', color='y')
+				ax.set_ylabel(f1 if j == 0 else '')
+				ax.set_xlabel(f2 if i == len(INCLUDE_FEATURES) - 1 else '')
 
 			else:
 				# Scatter plots pour les autres cases
 				for house, group in df.groupby('Hogwarts House'):
-					colors = {'Gryffindor': 'red', 'Ravenclaw': 'blue', 'Slytherin': 'green', 'Hufflepuff': 'yellow'}
+					colors = {'Gryffindor': 'r', 'Ravenclaw': 'b', 'Slytherin': 'g', 'Hufflepuff': 'y'}
 					ax.scatter(group[f2], group[f1], label=house, alpha=0.5, color=colors.get(house, 'gray'), s=10)
 				ax.set_ylabel(f1 if j == 0 else '')
 				ax.set_xlabel(f2 if i == len(INCLUDE_FEATURES) - 1 else '')
@@ -47,5 +49,10 @@ if __name__ == "__main__":
 		print("Usage: python pair_plot.py <path_to_csv>")
 		sys.exit(1)
 
-	df = pd.read_csv(sys.argv[1], index_col="Index")
+	try:
+		df = pd.read_csv(sys.argv[1], index_col="Index")
+	except Exception as e:
+		print(f"Error: {e}")
+		sys.exit(1)
+	
 	pair_plot(df)

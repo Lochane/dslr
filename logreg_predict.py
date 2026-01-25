@@ -3,6 +3,7 @@ import json
 import pandas as pd
 import numpy as np
 from sklearn.metrics import accuracy_score
+from utils.stats_tools import ft_max
 
 INCLUDE_FEATURES = [
 	'Herbology', 'Defense Against the Dark Arts',
@@ -43,7 +44,7 @@ def predict_house(student, models):
 		x_mean = model["x_mean"]
 		x_std = model["x_std"]
 		probs[house] = predict_proba(student, theta0, theta, x_mean, x_std)
-	return max(probs, key=probs.get)
+	return ft_max(probs, key=probs.get)
 
 
 def main():
@@ -67,7 +68,7 @@ def main():
 		results.append(house)
 
 	df["Hogwarts House Predicted"] = results
-	df[["Hogwarts House Predicted"]].to_csv("houses_split.csv")
+	df[["Hogwarts House Predicted"]].to_csv("houses.csv")
 
 	print("\033[92mPredictions saved to houses.csv\033[0m")
 	# Vérifier si la colonne réelle existe et contient des valeurs

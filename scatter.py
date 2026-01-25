@@ -7,7 +7,11 @@ import os
 
 # Formatage des donnees
 def pd_prep_csv(path):
-    dataset = pd.read_csv(path, index_col="Index")
+    try:
+        dataset = pd.read_csv(path, index_col="Index")
+    except Exception as e:
+        print(f"Error reading the CSV file: {e}")
+        sys.exit(1)
     print(f"Shape avant dropna {dataset.shape}")
     dataset.dropna(inplace=True)
     print(f"Shape after dropna {dataset.shape}")

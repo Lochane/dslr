@@ -1,5 +1,4 @@
 import sys
-import math
 from utils import data_tools, stats_tools
 
 def describe(data):
@@ -26,8 +25,8 @@ def describe(data):
                     fv = float(v)
                 except (TypeError, ValueError):
                     continue
-                # Détecter NaN via math.isnan
-                if math.isnan(fv):
+                # Détecter NaN (NaN est la seule valeur où x != x)
+                if fv != fv:
                     continue
                 cleaned.append(fv)
             # Ignorer les colonnes ne contenant que des NaN/None
@@ -65,6 +64,7 @@ def describe(data):
                     v = stats_tools.ft_max(vals)
                 else:
                     v = None
+                    
                 if v is None:
                     s = "NaN"
                 else:
@@ -77,28 +77,36 @@ def describe(data):
             values_str[(col, stat)] = s
 
     stat_col_width = 12
-    col_widths = {}
-    for col in numeric_data.keys():
-        max_val_len = max(len(values_str[(col, st)]) for st in stats)
-        col_name_len = len(col)
-        col_widths[col] = max(12, max_val_len, col_name_len + 2)
 
-    print(f"{'':<{stat_col_width}}", end="")
+# Calculer largeur de chaque colonne
+    col_widths = {
+        col: stats_tools.ft_max(len(col), stats_tools.ft_max(len(values_str[(col, st)]) for st in stats), 12)
+        for col in numeric_data.keys()
+    }
+
+# En-tête
+    print(f"{'Stat':<{stat_col_width}}", end="|")
     for col in numeric_data.keys():
-        print(f"{col:>{col_widths[col]}} ", end="")
+        print(f"{col:>{col_widths[col]}}", end="|")
     print()
 
+# Lignes de stats
     for stat in stats:
-        print(f"{stat:<{stat_col_width}}", end="")
+        print(f"{stat:<{stat_col_width}}", end="|")
         for col in numeric_data.keys():
-            s = values_str[(col, stat)]
-            print(f"{s:>{col_widths[col]}} ", end="")
+            print(f"{values_str[(col, stat)]:>{col_widths[col]}}", end="|")
         print()
+
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
         print("Usage: python describe.py <filename>")
         sys.exit(1)
 
-    dataset = data_tools.load_csv(sys.argv[1])
+    try :
+        dataset = data_tools.load_csv(sys.argv[1])
+    except Exception as e:
+        print(f"Error: {e}")
+        sys.exit(1)
+
     describe(dataset)
