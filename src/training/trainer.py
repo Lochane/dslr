@@ -1,11 +1,17 @@
-from src.base import BaseTrainer
 import numpy as np
-from src.training.metrics import mse, rmse
+# from src.training.metrics import mse, rmse
+from src.base import BaseModel
+from src.base import BaseTrainer
+from src.base.base_preprocessor import BasePreprocessor
+from src.persistence import save_model
+from src.training.logreg_predict import predict_house
+from sklearn.metrics import accuracy_score
+
 
 class GradientDescentTrainer(BaseTrainer):
 	"""Trainer for models using gradient descent."""
 	
-	def __init__(self, model, learning_rate: float = 0.01, iterations: int = 1000):
+	def __init__(self, model: BaseModel, learning_rate: float = 0.01, iterations: int = 1000):
 		"""Init GradientDescentTrainer 
 			Args:
 				model: The machine learning model to be trained.
@@ -24,18 +30,18 @@ class GradientDescentTrainer(BaseTrainer):
 		print(f"\033[93mTraining Linear Regression model...\033[0m")
 		for ite in range(self.iterations):
 			sum_error_b = 0
-			sum_error_w = np.zeros(len(self.weights))
+			sum_error_w = np.zeros(len(self.model.weights))
 
 			for i in range(n):
 				y_pred = self.model.predict(x[i])
 				error = y_pred - y[i]
 				sum_error_b += error
-				for j in range(len(self.weights)):
+				for j in range(len(self.model.weights)):
 					sum_error_w[j] += error * x[i][j]
 			
-			self.bias -= learning_rate * (sum_error_b / n)
-			for j in range(len(self.weights)):
-				self.weights[j] -= learning_rate * (sum_error_w / n)
+			self.model.bias -= self.learning_rate * (sum_error_b / n)
+			for j in range(len(self.model.weights)):
+				self.model.weights[j] -= self.learning_rate * (sum_error_w[j] / n)
 			
 			# if i % 100 == 0:
 			# 	train_y = self.model.predict(x)
@@ -45,3 +51,40 @@ class GradientDescentTrainer(BaseTrainer):
 		# print(f"\033[32mTraining of Linear Regression model done\033[0m")
 		# y_pred = self.model.predict(x)
 		# print(f"\033[93mFinal RMSE: {rmse(y, y_pred):.2f}€\033[0m")
+
+class OneVsAllTrainer(BaseTrainer):
+	def __init__(self, trainer: BaseTrainer, scaler: BasePreprocessor ,learning_rate: float = 0.01, iterations: int = 1000):
+		super().__init__(trainer.model, learning_rate, iterations)
+		self.trainer = trainer
+		self.scaler = scaler
+
+	def train(self, x: np.ndarray, y: np.ndarray, valid_df) -> list:
+		all_models = {}
+
+
+		for yi in np.unique(y):
+			y_binary = (y == yi).astype(int)
+			self.trainer.model.weights = np.zeros(x.shape[1])
+			self.trainer.model.bias = 0.0
+			self.trainer.train(x, y_binary)
+			# print(self.trainer.model.weights)
+			# break
+			all_models[yi] = {
+				"theta0": self.trainer.model.bias,
+				"theta": self.trainer.model.weights.tolist(),
+				"x_mean": self.scaler.means.tolist(),
+				"x_std": self.scaler.stds.tolist()
+			}
+
+		results = []
+
+		for _, row in valid_df.iterrows():
+			student = row.to_dict()
+			predicted_house = predict_house(student, all_models)
+			results.append(predicted_house)
+
+		accuracy = accuracy_score(valid_df['Hogwarts House'], results)
+		print(f"\033[94mOverall validation accuracy: {accuracy * 100:.2f}%\033[0m")
+
+		save_model(all_models, "data/models/all_thetas.json")
+		return save_model

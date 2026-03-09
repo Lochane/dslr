@@ -10,16 +10,16 @@ class StandardScaler(BasePreprocessor):
 				mean (np.ndarray): The mean of the features.
 				std (np.ndarray): The standard deviation of the features.
 		"""
-		self.mean = mean
-		self.std = std
+		self.means = mean
+		self.stds = std
 
 	def fit(self, data: np.ndarray):
 		"""Compute the mean and standard deviation of the data.
 			Args:
 				data (np.ndarray): The data to compute the mean and standard deviation from.
 		"""
-		self.mean = np.mean(data, axis=0)
-		self.std = np.std(data, axis=0)
+		self.means = np.nanmean(data, axis=0)
+		self.stds = np.nanstd(data, axis=0)
 
 	def transform(self, data: np.ndarray) -> np.ndarray:
 		"""Transform the data using the computed mean and standard deviation.
@@ -33,11 +33,11 @@ class StandardScaler(BasePreprocessor):
 
 		# Replace NaNs with the corresponding feature mean
 		nan_mask = np.isnan(x)
-		x = np.where(nan_mask, self.mean, x)
+		x = np.where(nan_mask, self.means, x)
 
 		# Avoid division by zero by using 1.0 where std is zero
-		std_safe = np.where(self.std != 0, self.std, 1.0)
-		return (x - self.mean) / std_safe
+		std_safe = np.where(self.stds != 0, self.stds, 1.0)
+		return (x - self.means) / std_safe
 
 	def fit_transform(self, data: np.ndarray) -> np.ndarray:
 		"""Fit the scaler to the data and transform it.

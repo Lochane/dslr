@@ -1,15 +1,17 @@
 import json
+import os
+def save_model(params: dict, filepath :str):
+		"""Creates the directory for the model file and saves the model to a specified path in JSON format.
 
-def save_model(params: dict, path :str):
-	"""Saves the model to a specified path in JSON format.
-
-	Args:
-		params: The model parameters to be saved.
-		path: The path where the model will be saved.
-	"""
-	with open(path, 'w') as f:
-		json.dump(params, f)
-	print(f"\033[32mModel parameters saved to {path}\033[0m")
+		Args:
+				params: The model parameters to be saved.
+				filepath: The path where the model will be saved.
+		"""
+		os.makedirs(os.path.dirname(filepath), exist_ok=True)
+		print(f"Directory '{filepath}' created successfully.")
+		with open(filepath, 'w') as f:
+				json.dump(params, f,indent=2)
+				print(f"\033[32mModel parameters saved to {filepath}\033[0m")
 
 def load_model(path: str) -> dict:
 	"""Loads the model from a specified path in JSON format.

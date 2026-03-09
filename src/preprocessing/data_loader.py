@@ -11,7 +11,7 @@ def load_csv(file_path: str) -> pd.DataFrame:
 	"""
 
 	try:
-		data = pd.read_csv(file_path)
+		data = pd.read_csv(file_path, index_col="Index")
 		print(f"\033[32mData loaded successfully from {file_path}\033[0m")
 		return data
 	except FileNotFoundError:
