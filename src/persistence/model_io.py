@@ -11,7 +11,7 @@ def save_model(params: dict, filepath :str):
 		print(f"Directory '{filepath}' created successfully.")
 		with open(filepath, 'w') as f:
 				json.dump(params, f,indent=2)
-				print(f"\033[32mModel parameters saved to {filepath}\033[0m")
+				print(f"\033[92mModel parameters saved to {filepath}\033[0m")
 
 def load_model(path: str) -> dict:
 	"""Loads the model from a specified path in JSON format.
@@ -30,7 +30,7 @@ def load_model(path: str) -> dict:
 	try:
 		with open(path, "r") as file:
 			params = json.load(file)
-			# print(f"\033[32mModel loaded successfully from {path}\033[0m")
+			print(f"\033[92mModel loaded successfully from {path}\033[0m")
 			return params
 	except FileNotFoundError:
 		raise 

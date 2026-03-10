@@ -19,7 +19,7 @@ class LogisticRegression(BaseModel):
 		return self._bias
 
 	@bias.setter
-	def bias(self, bias: np.ndarray):
+	def bias(self, bias: float):
 		self._bias = bias
 
 	def _sigmoid(self, score :np.ndarray) -> np.ndarray:
@@ -28,4 +28,3 @@ class LogisticRegression(BaseModel):
 	def predict(self, features: np.ndarray) -> np.ndarray:
 		score = self._bias + np.dot(features, self._weights)
 		return self._sigmoid(score)
-

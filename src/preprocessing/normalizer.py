@@ -4,14 +4,14 @@ from src.base import BasePreprocessor
 
 class StandardScaler(BasePreprocessor):
 	"""Standard Scaler class for normalizing data.""" 
-	def __init__(self, mean: np.ndarray=None, std: np.ndarray=None):
+	def __init__(self, means: np.ndarray=None, stds: np.ndarray=None):
 		"""Initialize the StandardScaler with mean and std. If mean and std are not provided, they will be computed from the data during fitting.
 			Args:
 				mean (np.ndarray): The mean of the features.
 				std (np.ndarray): The standard deviation of the features.
 		"""
-		self.means = mean
-		self.stds = std
+		self.means = means
+		self.stds = stds
 
 	def fit(self, data: np.ndarray):
 		"""Compute the mean and standard deviation of the data.
