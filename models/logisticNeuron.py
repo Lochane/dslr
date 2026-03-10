@@ -1,5 +1,9 @@
 import numpy as np
 
+def binary_cross_entropy_loss(y_true, y_pred):
+	y_pred = np.clip(y_pred, 1e-9, 1 - 1e-9)
+	return -np.mean(y_true * np.log(y_pred) + (1 - y_true) * np.log(1 - y_pred))
+
 class Neuron:
 	def __init__(self, weights, bias):
 		self.weights = weights
@@ -19,11 +23,17 @@ class LogisticNeuron(Neuron):
 
 	def fit(self, x, y, learning_rate=0.01, iterations=1000):
 		n = len(x)
-		for _ in range(iterations): ## Gradient descendant
-			print("\033[93mLoading iteration...\033[0m", end="\r")
+		for ite in range(iterations): ## Gradient descendant
+			print("\033[93mTraining Model...\033[0m", end="\r")
+			sum_error_b = 0
+			sum_error_w = [0.0] * len(self.weights)
 			for i in range(n):
 				prediction = self.forward(x[i])
 				error = prediction - y[i]
-				self.bias -= (learning_rate * error) / n ## Mise à jour du biais
+				sum_error_b += error
+				for j in range(len(self.weights)):
+					sum_error_w[j] += error * x[i][j]
+
+				self.bias -= learning_rate * (sum_error_b / n) ## Mise à jour du biais
 				for j in range(len(self.weights)): ## Mise à jour des poids
-					self.weights[j] -= (learning_rate * error * x[i][j]) / n
+					self.weights[j] -= learning_rate * (sum_error_w[j] / n)
