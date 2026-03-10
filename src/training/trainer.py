@@ -1,10 +1,7 @@
 import numpy as np
-from src.training.metrics import binary_cross_entropy_loss
-from src.base import BaseModel
-from src.base import BaseTrainer
-from src.base.base_preprocessor import BasePreprocessor
+from src.base import BaseModel, BaseTrainer, BasePreprocessor
 from src.persistence import save_model
-# from src.training import binary_cross_entropy_loss
+from src.training.metrics import binary_cross_entropy_loss
 
 
 class GradientDescentTrainer(BaseTrainer):
@@ -73,29 +70,8 @@ class OneVsAllTrainer(BaseTrainer):
 				"theta0": self.trainer.model.bias,
 				"theta": self.trainer.model.weights.tolist(),
 			}
+
 		json_conf["models"] = all_models
-
-		# results = []
-
-		# for _, row in valid_df.iterrows():
-		# 	student = row.to_dict()
-		# 	predicted_house = predict_house(student, all_models)
-		# 	results.append(predicted_house)
-
-		# accuracy = accuracy_score(valid_df['Hogwarts House'], results)
-		# print(f"\033[94mOverall validation accuracy: {accuracy * 100:.2f}%\033[0m")
 		save_model(json_conf, "data/models/all_thetas.json")
 		return all_models
 
-class OneVsAllPredictor():
-	def __init__(self, models: dict[str, BaseModel]):
-		self.models = models
-
-	def predict(self, x: np.ndarray) -> list:
-		results = []
-		for xi in x:
-			probs = {}
-			for key, model in self.models.items():
-				probs[key] = model.predict(xi)
-			results.append(max(probs, key=probs.get))
-		return results

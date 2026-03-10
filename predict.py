@@ -4,7 +4,8 @@ import pandas as pd
 from src.models import LogisticRegression
 from src.preprocessing import StandardScaler, load_csv
 from src.persistence import load_model
-from src.training import OneVsAllPredictor
+from src.predict import OneVsAllPredictor
+
 
 
 INCLUDE_FEATURES = [

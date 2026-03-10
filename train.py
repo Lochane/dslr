@@ -5,7 +5,8 @@ import pandas as pd
 from sklearn.metrics import accuracy_score
 from src.models import LogisticRegression
 from src.preprocessing import StandardScaler, load_csv
-from src.training import OneVsAllTrainer, GradientDescentTrainer, OneVsAllPredictor
+from src.training import OneVsAllTrainer, GradientDescentTrainer 
+from src.predict import OneVsAllPredictor
 from sklearn.metrics import accuracy_score
 
 
