@@ -34,6 +34,6 @@ class LogisticNeuron(Neuron):
 				for j in range(len(self.weights)):
 					sum_error_w[j] += error * x[i][j]
 
-				self.bias -= learning_rate * (sum_error_b / n) ## Mise à jour du biais
-				for j in range(len(self.weights)): ## Mise à jour des poids
-					self.weights[j] -= learning_rate * (sum_error_w[j] / n)
+			self.bias -= learning_rate * (sum_error_b / n) ## Mise à jour du biais
+			for j in range(len(self.weights)): ## Mise à jour des poids
+				self.weights[j] -= learning_rate * (sum_error_w[j] / n)
