@@ -13,7 +13,7 @@ This pair plot shows the **distribution of the features** selected for our model
 
 The classifier implements a **One-vs-All strategy**: one binary logistic regression model is trained per house, each learning to distinguish its house from all others.
 
-Each model applies a **linear transformation** to the input features, then passes the result trought a **sigmoid activation** function to output a probability between 0 (false) and 1 (true).</br> Parameters **are optimize via gradient descent** by minimizing the **binary cross-entropy loss**.
+Each model applies a **linear function** to the input features, then passes the result trought a **sigmoid activation** function to output a probability between 0 (false) and 1 (true).</br> Parameters **are optimize via gradient descent** by minimizing the **binary cross-entropy loss**.
 
 Once trained, the predicted house is the one whose model **returns the highest probability**.
 
@@ -37,4 +37,4 @@ pip install -r requirements.txt
 Train the model and run predictions:
 ```
 python train.py data/raw/dataset_train.csv    # trains the model and saves parameters 
- python predict.py data/raw/dataset_test.csv  # loads the model and predicts house for students
+python predict.py data/raw/dataset_test.csv  # loads the model and predicts house for students
