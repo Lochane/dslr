@@ -39,7 +39,7 @@ def main():
 	x_train = scaler.fit_transform(raw_x)
 	y_train = train_df['Hogwarts House'].to_numpy()
 	trainer = OneVsAllTrainer(GradientDescentTrainer(LogisticRegression()), scaler)
-	all_models = trainer.train(x_train, y_train, valid_df)
+	all_models = trainer.train(x_train, y_train)
 	
 	models = {}
 	for key, params in all_models.items():

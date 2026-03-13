@@ -24,20 +24,10 @@ class GradientDescentTrainer(BaseTrainer):
 		"""
 		n = len(x)
 		for ite in range(self.iterations):
-			sum_error_b = 0
-			sum_error_w = np.zeros(len(self.model.weights))
-
-			for i in range(n):
-				y_pred = self.model.predict(x[i])
-				error = y_pred - y[i]
-				sum_error_b += error
-				for j in range(len(self.model.weights)):
-					sum_error_w[j] += error * x[i][j]
-			
-			self.model.bias -= self.learning_rate * (sum_error_b / n)
-			for j in range(len(self.model.weights)):
-				self.model.weights[j] -= self.learning_rate * (sum_error_w[j] / n)
-			
+			y_pred = self.model.predict(x)
+			error = y_pred - y
+			self.model.bias -= self.learning_rate * np.mean(error)
+			self.model.weights -= self.learning_rate * np.dot(x.T, error) / n
 			if ite % 100 == 0:
 				y_pred = self.model.predict(x)
 				print(f"Loss: {binary_cross_entropy_loss(y, y_pred):.6f} | LR: {self.learning_rate} | Iter: {ite:>4}/{self.iterations}")
@@ -51,7 +41,7 @@ class OneVsAllTrainer(BaseTrainer):
 		self.trainer = trainer
 		self.scaler = scaler
 
-	def train(self, x: np.ndarray, y: np.ndarray, valid_df) -> list:
+	def train(self, x: np.ndarray, y: np.ndarray) -> list:
 		all_models = {}
 		json_conf = {
 			"scaler": {
@@ -67,7 +57,7 @@ class OneVsAllTrainer(BaseTrainer):
 			self.trainer.model.bias = 0.0
 			self.trainer.train(x, y_binary)
 			all_models[yi] = {
-				"theta0": self.trainer.model.bias,
+				"theta0": self.trainer.model.bias.tolist(),
 				"theta": self.trainer.model.weights.tolist(),
 			}
 

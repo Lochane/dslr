@@ -5,11 +5,11 @@ class OneVsAllPredictor(BasePredictor):
 	def __init__(self, models: dict[str, BaseModel]):
 		self.models = models
 
-	def predict(self, x: np.ndarray) -> list:
-		results = []
-		for xi in x:
-			probs = {}
-			for key, model in self.models.items():
-				probs[key] = model.predict(xi)
-			results.append(max(probs, key=probs.get))
-		return results
+	def predict(self, x: np.ndarray):
+		probs = np.zeros((len(self.models), len(x)))
+		for index, model in enumerate(self.models.values()):
+			probs[index] = model.predict(x)
+		keys = list(self.models.keys())
+		probs = probs.T
+		probs = np.argmax(probs, axis=1)
+		return np.array(keys)[probs]
